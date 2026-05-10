@@ -1,6 +1,7 @@
 package com.demo.demo.controller;
 
 import com.demo.demo.model.User;
+import com.demo.demo.model.dto.requestDto.UserDto;
 import com.demo.demo.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,10 +19,17 @@ public class UserController {
         this.userService = userService;
     }
 
-    // Tüm kullanıcıları listele (Genelde sadece ADMIN yetkisiyle erişilir)
+
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok(userService.findAll());
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        List<UserDto> userDtos = userService.findAll().stream()
+                .map(user -> new UserDto(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getRole()
+                ))
+                .toList();
+        return ResponseEntity.ok(userDtos);
     }
 
     // Kullanıcı adı ile detay getir

@@ -1,5 +1,6 @@
 package com.demo.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -24,8 +25,9 @@ public class Note {
     // HATA PAYINI SIFIRLAMAK İÇİN:
     // private Long userId; -> Bu satırı SİLİYORUZ.
 
-    @ManyToOne(fetch = FetchType.LAZY) // Performans için LAZY iyidir
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
     private User user;
 
     // Not kaydedilmeden hemen önce tarihi otomatik atayalım

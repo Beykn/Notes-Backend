@@ -1,6 +1,7 @@
 package com.demo.demo.model;
 
 import com.demo.demo.model.enums.Role;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,6 +26,7 @@ public class User {
     private String password;
     // User.java içinde ilgili kısım
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Note> notes = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)

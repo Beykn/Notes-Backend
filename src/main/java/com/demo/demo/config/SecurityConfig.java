@@ -33,12 +33,15 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/auth/**",
                                 "/v3/api-docs/**",
+                                "/v3/api-docs.yaml",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html"
+                                "/swagger-ui.html",
+                                "/swagger-resources/**",
+                                "/webjars/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class); // 🔥 KRİTİK
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
