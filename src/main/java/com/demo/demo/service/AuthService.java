@@ -36,17 +36,17 @@ public class AuthService {
         user.setRole(Role.USER);
         userRepository.save(user);
 
-        return "Kullanıcı başarıyla oluşturuldu.";
+        return "User created!";
     }
 
     public String login(String username, String password) {
         // 1. Kullanıcıyı bul
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı!"));
+                .orElseThrow(() -> new RuntimeException("User not found!"));
 
         // 2. Şifreyi kontrol et
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("Hatalı şifre!");
+            throw new RuntimeException("Wrong Password");
         }
 
         // 3. UserDetails oluşturmak için daha önce yazdığımız servisi kullan (Kod tekrarından kaçın)
