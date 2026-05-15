@@ -43,7 +43,16 @@ jobs:
         env:
           DB_URL: jdbc:postgresql://localhost:5432/notes
 
-      - name: Build Docker Image
-        run: |
-          docker build -t notes-backend .
-          echo "Docker Image built successfully."
+      - name: Login to Docker Hub
+        uses: docker/login-action@3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{secrets.DOCKERHUB_USERNAME }}/notes-backend:latest
+
