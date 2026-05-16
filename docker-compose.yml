@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  notes-backend:
+    image: beykan/notes-backend:latest
+    container_name: notes-backend-container
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_URL=jdbc:postgresql://postgres-db:5432/notes
+    depends_on:
+       postgres-db:
+        condition: service_healthy
+
+  postgres-db:
+    image: postgres:15
+    container_name: postgres-db-container
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: notes
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: b.12345
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+        test: [ "CMD-SHELL", "pg_isready -U postgres -d notes" ]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+
+volumes:
+  postgres_data:
