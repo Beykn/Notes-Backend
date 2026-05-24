@@ -18,9 +18,16 @@ public class NoteController {
         this.noteService = noteService;
     }
 
-    @PostMapping("/create/{userId}")
-    public ResponseEntity<Note> createNote(@RequestBody Note note, @PathVariable Long userId) {
-        return ResponseEntity.ok(noteService.createNote(note, userId));
+    @PostMapping("/create")
+    public ResponseEntity<Note> createNote(@RequestBody Note note) {
+        // SecurityContext ' te kullanıcıyı kontrol ediyorum
+        String authenticatedUserEmail = org.springframework.security.core.context.SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        // Servis katmanına ID yerine bu güvenli email/username bilgisini geçiyoruz
+        return ResponseEntity.ok(noteService.createNoteForAuthenticatedUser(note, authenticatedUserEmail));
     }
 
     @GetMapping("/user/{userId}")
@@ -30,7 +37,11 @@ public class NoteController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
-        noteService.deleteById(id);
+        String authenticatedUserName = org.springframework.security.core.context.SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+        noteService.deleteNoteIfOwned(id, authenticatedUserName);
         return ResponseEntity.ok().build();
     }
 }

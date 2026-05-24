@@ -1,9 +1,12 @@
 package com.demo.demo.service;
 
+import com.demo.demo.exception.ResourceNotFoundException;
 import com.demo.demo.model.Note;
 import com.demo.demo.model.User;
 import com.demo.demo.repository.NoteRepository;
 import com.demo.demo.repository.UserRepository;
+import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,5 +37,32 @@ public class NoteService {
 
     public void deleteById(Long noteId){
         noteRepository.deleteById(noteId);
+    }
+
+    public Note createNoteForAuthenticatedUser(Note note, String authenticatedUsername) {
+        //Username bilgisine göre veritabanından kullanıcıyı buluyoruz
+        User user = userRepository.findByUsername(authenticatedUsername)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + authenticatedUsername));
+
+        //Not nesnesine, bulduğumuz kullanıcıyı bağlıyoruz
+        note.setUser(user);
+
+        // Notu veritabanına kaydediyoruz
+        return noteRepository.save(note);
+    }
+
+    public void deleteNoteIfOwned(Long noteId, String authenticatedUserName) {
+
+        // 1 . Silinmek istenen notu veritabanından buluyoruz.
+        Note note = noteRepository.findById(noteId)
+                .orElseThrow(() -> new ResourceNotFoundException("Note not found! ID: " + noteId));
+                // 2. Güvenlik kontrolü : Notun sahibinin kulllanıcı adıyla istek atanın adıyla eşleşiyor mu ?
+                if (!note.getUser().getUsername().equals(authenticatedUserName)){
+                    throw new org.springframework.security.access.AuthorizationServiceException(
+                            "You have not permission for delete this note !"
+                    );
+                }
+                noteRepository.deleteById(noteId);
+
     }
 }
