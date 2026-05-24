@@ -23,6 +23,15 @@ public class SecurityConfig {
         this.jwtAuthFilter = jwtAuthFilter;
     }
 
+    /*
+    There are checked (compile-time) and unchecked (runtime) exceptions in Java,
+     and the one used here is a checked exception.
+     The http.build() method in this code throws a checked exception.
+     We use it so that if any error occurs in the security layer,
+    it prevents the application from starting up or hands the responsibility over to Spring to handle the problem.
+    */
+
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
