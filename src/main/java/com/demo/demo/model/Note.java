@@ -3,7 +3,9 @@ package com.demo.demo.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.LocalDateTime;
+import java.time.Instant;
+
+
 
 @Getter
 @Setter
@@ -20,19 +22,20 @@ public class Note {
     private String content;
     private String url;
 
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     // HATA PAYINI SIFIRLAMAK İÇİN:
     // private Long userId; -> Bu satırı SİLİYORUZ.
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(nullable = false) //name silindi, parametre güncellendi arka planda user_id eşlemesini kendi kendine yapcağı için sorun yaratmaz
     @JsonBackReference
     private User user;
 
     // Not kaydedilmeden hemen önce tarihi otomatik atayalım
     @PrePersist
     protected void onCreate() {
-        createdAt = LocalDateTime.now();
+        //Sunucu nerede olursa olsun her zaman ortak saat olan UTC yi kaydeder
+        createdAt = Instant.now();
     }
 }

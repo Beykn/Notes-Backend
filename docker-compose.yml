@@ -20,8 +20,8 @@ services:
     environment:
       POSTGRES_DB: notes
       POSTGRES_USER: postgres
-      # TODO: Move plain-text password to a secure .env file before production
-      POSTGRES_PASSWORD: b.12345
+      # Şifre artık .env dosyasında
+      POSTGRES_PASSWORD: ${POSTGRES_DB_PASSWORD}
 
     volumes:
       - postgres_data:/var/lib/postgresql/data

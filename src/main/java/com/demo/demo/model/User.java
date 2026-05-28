@@ -17,7 +17,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "\"user\"")
+//application.properties de "spring.jpa.hibernate.ddl-auto=update" ayarı var o yüzden table name güncellenirken hibernate hata vermetecek
+@Table(name = "auth_user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
