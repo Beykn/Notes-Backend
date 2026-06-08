@@ -34,3 +34,6 @@ build/
 
 # macOS'un oluşturduğu gereksiz sistem dosyaları
 .DS_Store
+
+#local environment variables
+.env
